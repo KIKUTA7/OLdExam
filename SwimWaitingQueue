@@ -1,0 +1,37 @@
+package com.company;
+
+import java.util.*;
+
+// Insgesamt 4 P
+public class SwimWaitingQueue {
+    private List<Runnable> list;
+
+    // 0.5 P constructor
+    public SwimWaitingQueue() {
+        this.list = new LinkedList<>();
+    }
+
+    // 1 P for the whole method
+    public synchronized void reserve(Runnable r) {
+        list.add(r);
+        notifyAll();
+    }
+
+    // 2.5 P for the whole method
+    public synchronized Runnable assign() {
+        Runnable r = null;
+        // 1 P Check whether some Element is in the list
+        // Recursion instead of loop 0 P
+        while (list.size() == 0) {
+            try {
+                // 1 P for wait
+                wait();
+            } catch (InterruptedException err) {
+                // 0.5 P for catching the Exception
+            }
+        }
+        r = list.remove(0);
+        // missign return is ignored
+        return r;
+    }
+}
