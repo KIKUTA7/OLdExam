@@ -1,0 +1,42 @@
+package com.company;
+
+public class Lane extends Thread {
+    private SwimWaitingQueue tasks = null;
+    private boolean isStopped = false;
+
+    // 1 point
+    public Lane(SwimWaitingQueue wr){
+        tasks = wr;
+    }
+
+    // 5 points
+    public void run(){
+        // 1.5 points for loop condition
+        while(!isStopped()){
+            try{
+                // 1 point for calling assign()
+                Runnable runnable = tasks.assign();
+                // 1.5 points for run()
+                runnable.run();
+            } catch(Exception e){
+                // 1 point for catching the Exception
+
+                //log or otherwise report exception,
+                //but keep pool thread alive.
+            }
+        }
+    }
+
+    // 3 points
+    public synchronized void doStop(){
+        // 1 point for setting the flag
+        isStopped = true;
+        // 2 points for interrupting
+        this.interrupt(); //break pool thread out of dequeue() call.
+    }
+
+    public synchronized boolean isStopped(){
+        return isStopped;
+    }
+}
+
