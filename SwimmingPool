@@ -1,0 +1,44 @@
+package com.company;
+
+import java.util.*;
+
+public class SwimmingPool {
+    private SwimWaitingQueue tasks = null;
+    private Lane[] threads = null;
+    private boolean isStopped = false;
+
+    // 3 points
+    public SwimmingPool(int threadCount){
+        // 1 point
+        tasks = new SwimWaitingQueue();
+
+        // 1 point for creating all threads
+        for(int i=0; i<threadCount; i++){
+            threads[i] = new Lane(tasks);
+        }
+        // 1 point for starting all threads
+        for(Lane thread : threads){
+            thread.start();
+        }
+    }
+
+    // 2 points
+    public synchronized void  reserve(Runnable task) throws Exception {
+        // 1 point for condition and Exception thrown
+        if(this.isStopped) throw
+                new IllegalStateException("SwimmingPool is stopped");
+
+        // 1 point
+        this.tasks.reserve(task);
+    }
+
+    // 2 points
+    public synchronized void stop(){
+        // 1 point setting the flag
+        this.isStopped = true;
+        // 1 point for stopping all threads
+        for(Lane thread : threads){
+            thread.doStop();
+        }
+    }
+}
